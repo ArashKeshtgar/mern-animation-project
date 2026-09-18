@@ -1,0 +1,115 @@
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
+import { removeFromCart, updateCartQty } from '../../actions/cartActions';
+
+const CartPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const items = useSelector(state => state.cart.items);
+  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const shipping = items.length ? 4.99 : 0;
+  const total = subtotal + shipping;
+
+  if (!items.length) {
+    return (
+      <div className="container py-5 text-center">
+        <div style={{ fontSize: '4rem' }}>🛒</div>
+        <h1 className="mt-3">Your cart is empty</h1>
+        <p className="text-muted mb-4">Looks like you haven't added anything yet.</p>
+        <Link to="/products" className="btn btn-primary btn-lg">Browse Products</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container py-4">
+      <h1 className="mb-4">Your Cart</h1>
+      <div className="row g-4">
+        <div className="col-lg-8">
+          <div className="card shadow-sm">
+            <AnimatePresence>
+              {items.map(item => (
+                <motion.div
+                  key={item.productId}
+                  className="d-flex align-items-center border-bottom p-3"
+                  initial={{ opacity: 1 }}
+                  exit={{ opacity: 0, x: -50 }}
+                >
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    width="80"
+                    height="80"
+                    style={{ objectFit: 'cover' }}
+                    className="rounded me-3"
+                  />
+                  <div className="flex-grow-1">
+                    <h6 className="mb-1">{item.title}</h6>
+                    <span className="text-muted">${item.price.toFixed(2)} each</span>
+                  </div>
+                  <div className="d-flex align-items-center border rounded mx-3">
+                    <button
+                      className="btn btn-sm"
+                      onClick={() => dispatch(updateCartQty(item.productId, item.quantity - 1))}
+                    >
+                      −
+                    </button>
+                    <span className="px-3">{item.quantity}</span>
+                    <button
+                      className="btn btn-sm"
+                      onClick={() => dispatch(updateCartQty(item.productId, item.quantity + 1))}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <strong className="me-3" style={{ width: 70, textAlign: 'right' }}>
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </strong>
+                  <button
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => dispatch(removeFromCart(item.productId))}
+                  >
+                    Remove
+                  </button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+          <Link to="/products" className="d-inline-block mt-3">&larr; Continue Shopping</Link>
+        </div>
+
+        <div className="col-lg-4">
+          <div className="card shadow-sm">
+            <div className="card-body">
+              <h5 className="card-title mb-3">Order Summary</h5>
+              <div className="d-flex justify-content-between mb-2">
+                <span>Subtotal</span>
+                <span>${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="d-flex justify-content-between mb-2 text-muted">
+                <span>Shipping</span>
+                <span>${shipping.toFixed(2)}</span>
+              </div>
+              <hr />
+              <div className="d-flex justify-content-between mb-3">
+                <strong>Total</strong>
+                <strong>${total.toFixed(2)}</strong>
+              </div>
+              <motion.button
+                className="btn btn-success btn-lg w-100"
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/checkout')}
+              >
+                Proceed to Checkout
+              </motion.button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CartPage;

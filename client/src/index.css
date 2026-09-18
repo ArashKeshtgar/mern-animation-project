@@ -1,0 +1,67 @@
+:root {
+  --voltra-bg: #0f172a;
+  --voltra-bg-soft: #1e293b;
+  --voltra-surface: #ffffff;
+  --voltra-text: #0f172a;
+  --voltra-text-muted: #64748b;
+  --voltra-accent: #38bdf8;
+  --voltra-accent-dark: #0ea5e9;
+  --voltra-highlight: #f59e0b;
+  --voltra-radius: 12px;
+  --voltra-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+
+body {
+  margin: 0;
+  background: #f8fafc;
+  color: var(--voltra-text);
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.card {
+  border: none;
+  border-radius: var(--voltra-radius);
+  box-shadow: var(--voltra-shadow);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+}
+
+.btn-primary {
+  background-color: var(--voltra-accent-dark);
+  border-color: var(--voltra-accent-dark);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--voltra-accent);
+  border-color: var(--voltra-accent);
+}
+
+.btn-success {
+  background-color: var(--voltra-highlight);
+  border-color: var(--voltra-highlight);
+  color: #1a1a1a;
+}
+
+.btn-success:hover,
+.btn-success:focus {
+  background-color: #d97706;
+  border-color: #d97706;
+  color: #fff;
+}
+
+.navbar.bg-dark {
+  background-color: var(--voltra-bg) !important;
+}
