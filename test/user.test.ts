@@ -1,16 +1,14 @@
-process.env.MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mern-store-test';
-
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../server');
-const User = require('../models/User');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
+import app from '../app';
+import User from '../models/User';
 
 chai.should();
 chai.use(chaiHttp);
 
 describe('Auth', () => {
-  before((done) => {
-    User.deleteMany({}, () => done());
+  before(async () => {
+    await User.deleteMany({});
   });
 
   it('registers a new user', (done) => {
@@ -20,7 +18,7 @@ describe('Auth', () => {
       password: 'password123'
     };
 
-    chai.request(server)
+    chai.request(app)
       .post('/api/auth/register')
       .send(user)
       .end((err, res) => {

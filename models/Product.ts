@@ -1,7 +1,17 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
-const ProductSchema = new Schema({
+export interface IProduct extends Document {
+  title: string;
+  description: string;
+  price: number;
+  category: Types.ObjectId;
+  imageUrl: string;
+  stock: number;
+  seller: Types.ObjectId;
+  createdAt: Date;
+}
+
+const ProductSchema = new Schema<IProduct>({
   title: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
@@ -12,4 +22,4 @@ const ProductSchema = new Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Product', ProductSchema);
+export default mongoose.model<IProduct>('Product', ProductSchema);

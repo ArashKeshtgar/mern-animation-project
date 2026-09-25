@@ -1,6 +1,6 @@
-# MERN Store
+# Voltra
 
-A full-stack e-commerce demo built with MongoDB, Express, React, and Node — with a `framer-motion`-animated frontend and a real Stripe test-mode checkout.
+A full-stack electronics marketplace built with MongoDB, Express, React, and Node — TypeScript on the backend, a `framer-motion`-animated frontend, and a real Stripe test-mode checkout.
 
 ## Features
 
@@ -14,7 +14,7 @@ A full-stack e-commerce demo built with MongoDB, Express, React, and Node — wi
 ## Tech stack
 
 - **Frontend:** React, React Router, Redux, Bootstrap, Framer Motion, Stripe.js
-- **Backend:** Node.js, Express, MongoDB/Mongoose, JWT, bcrypt, Multer
+- **Backend:** Node.js, **TypeScript**, Express, MongoDB/Mongoose, JWT, bcrypt, Multer
 - **Payments:** Stripe (test mode)
 
 ## Setup
@@ -46,12 +46,14 @@ Inserts 4 categories and 15 sample products (with placeholder images) into Mongo
 ### 4. Run
 
 ```bash
-# terminal 1 — backend (port 5000)
+# terminal 1 — backend (port 5000), runs server.ts directly via tsx
 npm run dev
 
 # terminal 2 — frontend (port 3000)
 cd client && npm start
 ```
+
+To run the compiled production build instead: `npm run build` (emits to `dist/`) then `npm start`.
 
 ### 5. Try the checkout flow
 
@@ -64,9 +66,13 @@ Register/log in, add a few products to the cart, and pay with the Stripe test ca
 ## Project structure
 
 ```
-├── models/          Mongoose schemas (User, Product, Category, Review, Order)
-├── routes/          Express routes (auth, products, categories, reviews, payment, orders)
+├── app.ts            Express app (routes, middleware) — no listen()
+├── server.ts         Entry point: imports app, calls app.listen()
+├── models/           Mongoose schemas + TS interfaces (User, Product, Category, Review, Order)
+├── routes/           Express routes (auth, products, categories, reviews, payment, orders)
 ├── middleware/       JWT auth middleware
-├── seed/            Sample data seeding script
-├── client/          React frontend (Redux, Stripe Elements, framer-motion)
+├── types/            Shared TS type declarations (Express Request augmentation)
+├── seed/             Sample data seeding script
+├── test/             Mocha/Chai integration tests
+├── client/           React frontend (Redux, Stripe Elements, framer-motion)
 ```

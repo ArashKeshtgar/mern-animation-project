@@ -1,13 +1,13 @@
-const express = require('express');
-const Order = require('../models/Order');
-const auth = require('../middleware/auth');
+import express, { Request, Response } from 'express';
+import Order from '../models/Order';
+import auth from '../middleware/auth';
 
 const router = express.Router();
 
 // @route   POST /api/orders
 // @desc    Persist an order after a successful Stripe payment
 // @access  Private
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, async (req: Request, res: Response) => {
   try {
     const { items, total, stripePaymentIntentId } = req.body;
 
@@ -16,7 +16,7 @@ router.post('/', auth, async (req, res) => {
     }
 
     const order = await Order.create({
-      user: req.user.id,
+      user: req.user!.id,
       items,
       total,
       stripePaymentIntentId
@@ -24,7 +24,7 @@ router.post('/', auth, async (req, res) => {
 
     res.json(order);
   } catch (err) {
-    console.error(err.message);
+    console.error((err as Error).message);
     res.status(500).send('Server error');
   }
 });
@@ -32,14 +32,14 @@ router.post('/', auth, async (req, res) => {
 // @route   GET /api/orders
 // @desc    List the logged-in user's orders
 // @access  Private
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, async (req: Request, res: Response) => {
   try {
-    const orders = await Order.find({ user: req.user.id }).sort('-createdAt');
+    const orders = await Order.find({ user: req.user!.id }).sort('-createdAt');
     res.json(orders);
   } catch (err) {
-    console.error(err.message);
+    console.error((err as Error).message);
     res.status(500).send('Server error');
   }
 });
 
-module.exports = router;
+export default router;

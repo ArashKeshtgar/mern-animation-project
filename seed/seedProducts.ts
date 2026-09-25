@@ -1,20 +1,30 @@
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+import '../env';
 
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const connectDB = require('../db');
-const Category = require('../models/Category');
-const Product = require('../models/Product');
-const User = require('../models/User');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import connectDB from '../db';
+import Category, { ICategory } from '../models/Category';
+import Product from '../models/Product';
+import User from '../models/User';
 
-const categoryNames = ['Electronics', 'Apparel', 'Home & Kitchen', 'Books'];
+type CategoryName = 'Electronics' | 'Apparel' | 'Home & Kitchen' | 'Books';
+
+const categoryNames: CategoryName[] = ['Electronics', 'Apparel', 'Home & Kitchen', 'Books'];
 
 // Real, relevant photos from Unsplash's CDN (no API key needed for direct
 // image delivery), one hand-picked per product — not a random/generic feed.
-const img = (id) => `https://images.unsplash.com/photo-${id}?w=600&h=600&fit=crop&q=80`;
+const img = (id: string): string => `https://images.unsplash.com/photo-${id}?w=600&h=600&fit=crop&q=80`;
 
-const products = [
+interface SeedProduct {
+  title: string;
+  description: string;
+  price: number;
+  category: CategoryName;
+  stock: number;
+  image: string;
+}
+
+const products: SeedProduct[] = [
   { title: 'Wireless Noise-Cancelling Headphones', description: 'Over-ear Bluetooth headphones with 30-hour battery life and active noise cancellation.', price: 129.99, category: 'Electronics', stock: 50, image: img('1505740420928-5e560c06d30e') },
   { title: 'Smart Fitness Watch', description: 'Tracks heart rate, sleep, and workouts with a 7-day battery.', price: 89.5, category: 'Electronics', stock: 40, image: img('1508685096489-7aacd43bd3b1') },
   { title: 'Portable Bluetooth Speaker', description: 'Waterproof speaker with 360-degree sound and 12-hour playtime.', price: 45.0, category: 'Electronics', stock: 60, image: img('1608043152269-423dbba4e7e1') },
@@ -32,7 +42,7 @@ const products = [
   { title: 'Atomic Habits', description: 'A practical guide to building good habits and breaking bad ones.', price: 16.99, category: 'Books', stock: 100, image: img('1517849325426-6eac321919a0') }
 ];
 
-const run = async () => {
+const run = async (): Promise<void> => {
   await connectDB();
 
   await Category.deleteMany({});
@@ -45,7 +55,7 @@ const run = async () => {
     password: await bcrypt.hash('seed-account-not-for-login', 10)
   });
 
-  const categoryDocs = {};
+  const categoryDocs: Record<string, ICategory> = {};
   for (const name of categoryNames) {
     categoryDocs[name] = await Category.create({ name });
   }

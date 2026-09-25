@@ -1,24 +1,24 @@
-const express = require('express');
-const Category = require('../models/Category');
-const auth = require('../middleware/auth');
+import express, { Request, Response } from 'express';
+import Category from '../models/Category';
+import auth from '../middleware/auth';
 
 const router = express.Router();
 
 // @route   GET /api/categories
 // @access  Public
-router.get('/', async (req, res) => {
+router.get('/', async (_req: Request, res: Response) => {
   try {
     const categories = await Category.find().sort('name');
     res.json(categories);
   } catch (err) {
-    console.error(err.message);
+    console.error((err as Error).message);
     res.status(500).send('Server error');
   }
 });
 
 // @route   POST /api/categories
 // @access  Private
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, async (req: Request, res: Response) => {
   try {
     const { name } = req.body;
     let category = await Category.findOne({ name });
@@ -28,9 +28,9 @@ router.post('/', auth, async (req, res) => {
     category = await Category.create({ name });
     res.json(category);
   } catch (err) {
-    console.error(err.message);
+    console.error((err as Error).message);
     res.status(500).send('Server error');
   }
 });
 
-module.exports = router;
+export default router;

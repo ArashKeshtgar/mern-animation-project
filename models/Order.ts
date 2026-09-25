@@ -1,14 +1,29 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
-const OrderItemSchema = new Schema({
+export interface IOrderItem {
+  product: Types.ObjectId;
+  title: string;
+  price: number;
+  quantity: number;
+}
+
+export interface IOrder extends Document {
+  user: Types.ObjectId;
+  items: IOrderItem[];
+  total: number;
+  stripePaymentIntentId: string;
+  status: 'paid' | 'failed';
+  createdAt: Date;
+}
+
+const OrderItemSchema = new Schema<IOrderItem>({
   product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
   title: { type: String, required: true },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true }
 }, { _id: false });
 
-const OrderSchema = new Schema({
+const OrderSchema = new Schema<IOrder>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   items: { type: [OrderItemSchema], required: true },
   total: { type: Number, required: true },
@@ -17,4 +32,4 @@ const OrderSchema = new Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Order', OrderSchema);
+export default mongoose.model<IOrder>('Order', OrderSchema);

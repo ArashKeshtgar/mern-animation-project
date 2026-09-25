@@ -1,14 +1,15 @@
-const express = require('express');
-const keys = require('../config/keys');
-const auth = require('../middleware/auth');
+import express, { Request, Response } from 'express';
+import Stripe from 'stripe';
+import keys from '../config/keys';
+import auth from '../middleware/auth';
 
 const router = express.Router();
-const stripe = require('stripe')(keys.stripeSecretKey);
+const stripe = new Stripe(keys.stripeSecretKey);
 
 // @route   POST /api/payment/create-payment-intent
 // @desc    Create a Stripe PaymentIntent for the given cart total
 // @access  Private
-router.post('/create-payment-intent', auth, async (req, res) => {
+router.post('/create-payment-intent', auth, async (req: Request, res: Response) => {
   try {
     const { amount } = req.body; // amount in the smallest currency unit (e.g. cents)
 
@@ -24,9 +25,9 @@ router.post('/create-payment-intent', auth, async (req, res) => {
 
     res.json({ clientSecret: paymentIntent.client_secret });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ msg: 'Payment intent creation failed', error: err.message });
+    console.error((err as Error).message);
+    res.status(500).json({ msg: 'Payment intent creation failed', error: (err as Error).message });
   }
 });
 
-module.exports = router;
+export default router;
